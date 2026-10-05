@@ -1,12 +1,16 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 
-export const metadata = {
-  title: 'Contact VentZivo — Support & Inquiries',
-  description: 'Get in touch with the VentZivo team for support, partnerships, or vendor onboarding.',
-};
-
 export default function ContactPage() {
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
   return (
     <div className="bg-slate-50 min-h-screen py-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -52,36 +56,44 @@ export default function ContactPage() {
 
           <div className="md:col-span-2 bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm">
             <h3 className="font-bold text-lg text-slate-900 mb-6">Send Us a Message</h3>
-            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert('Thank you for reaching out! Our team will respond shortly.'); }}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Your Name</label>
-                  <input type="text" required placeholder="John Doe" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-blue-800" />
+
+            {submitted ? (
+              <div className="p-6 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-center">
+                <p className="font-bold">Thank you for reaching out!</p>
+                <p className="text-xs mt-1">Our team will get back to you shortly.</p>
+              </div>
+            ) : (
+              <form className="space-y-4" onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Your Name</label>
+                    <input type="text" required placeholder="John Doe" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-blue-800" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address</label>
+                    <input type="email" required placeholder="john@example.com" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-blue-800" />
+                  </div>
                 </div>
+
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address</label>
-                  <input type="email" required placeholder="john@example.com" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-blue-800" />
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Subject</label>
+                  <input type="text" required placeholder="Vendor Inquiry / Support" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-blue-800" />
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Subject</label>
-                <input type="text" required placeholder="Vendor Inquiry / Support" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-blue-800" />
-              </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Message</label>
+                  <textarea rows={4} required placeholder="How can we assist you?" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-blue-800" />
+                </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Message</label>
-                <textarea rows={4} required placeholder="How can we assist you?" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-blue-800" />
-              </div>
-
-              <button
-                type="submit"
-                className="px-8 py-3 rounded-xl bg-brand-blue-800 hover:bg-brand-blue-900 text-white font-bold text-sm shadow transition-colors flex items-center gap-2"
-              >
-                <span>Send Message</span>
-                <Send className="w-4 h-4" />
-              </button>
-            </form>
+                <button
+                  type="submit"
+                  className="px-8 py-3 rounded-xl bg-brand-blue-800 hover:bg-brand-blue-900 text-white font-bold text-sm shadow transition-colors flex items-center gap-2"
+                >
+                  <span>Send Message</span>
+                  <Send className="w-4 h-4" />
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </div>
