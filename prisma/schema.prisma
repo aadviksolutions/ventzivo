@@ -1,0 +1,348 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  passwordHash  String
+  name          String
+  phone         String?
+  role          String         @default("CLIENT") // ADMIN, VENDOR, CLIENT
+  avatar        String?
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  vendor        Vendor?
+  enquiries     Enquiry[]
+  reviews       Review[]
+  favourites    Favourite[]
+  notifications Notification[]
+  eventPlans    EventRequirement[]
+}
+
+model Vendor {
+  id                 String           @id @default(cuid())
+  userId             String           @unique
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  businessName       String
+  ownerName          String
+  slug               String           @unique
+  email              String
+  mobile             String
+  whatsapp           String?
+  website            String?
+  
+  categoryId         String
+  category           Category         @relation(fields: [categoryId], references: [id])
+  subCategoryId      String?
+  subCategory        SubCategory?     @relation(fields: [subCategoryId], references: [id])
+  
+  city               String
+  state              String
+  pincode            String?
+  address            String?
+  serviceAreas       String           @default("[]") // JSON string of areas
+  
+  description        String?
+  experienceYears    Int              @default(1)
+  teamSize           Int              @default(1)
+  startingPrice      Float            @default(0)
+  
+  gstNumber          String?
+  businessRegNumber  String?
+  
+  logo               String?
+  coverImage         String?
+  
+  status             String           @default("PENDING_APPROVAL") // REGISTERED, PENDING_APPROVAL, APPROVED, VERIFIED, REJECTED, SUSPENDED
+  rejectionReason    String?
+  isFeatured         Boolean          @default(false)
+  isVerified         Boolean          @default(false)
+  
+  rating             Float            @default(5.0)
+  reviewCount        Int              @default(0)
+  viewCount          Int              @default(0)
+  shortlistCount     Int              @default(0)
+  
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  services           VendorService[]
+  eventTypes         VendorEventType[]
+  gallery            VendorGallery[]
+  businessHours      BusinessHours[]
+  enquiries          Enquiry[]
+  leads              Lead[]
+  reviews            Review[]
+  favourites         Favourite[]
+}
+
+model EventType {
+  id             String            @id @default(cuid())
+  name           String            @unique
+  slug           String            @unique
+  description    String?
+  image          String?
+  icon           String?
+  isPopular      Boolean           @default(false)
+  isActive       Boolean           @default(true)
+  sortOrder      Int               @default(0)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  vendors        VendorEventType[]
+  enquiries      Enquiry[]
+  eventPlans     EventRequirement[]
+}
+
+model Category {
+  id             String            @id @default(cuid())
+  name           String            @unique
+  slug           String            @unique
+  icon           String?
+  image          String?
+  description    String?
+  isPopular      Boolean           @default(false)
+  isActive       Boolean           @default(true)
+  sortOrder      Int               @default(0)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  subCategories  SubCategory[]
+  vendors        Vendor[]
+  vendorServices VendorService[]
+}
+
+model SubCategory {
+  id             String            @id @default(cuid())
+  categoryId     String
+  category       Category          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  name           String
+  slug           String            @unique
+  description    String?
+  image          String?
+  isActive       Boolean           @default(true)
+  sortOrder      Int               @default(0)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  vendors        Vendor[]
+  vendorServices VendorService[]
+}
+
+model VendorEventType {
+  id          String    @id @default(cuid())
+  vendorId    String
+  vendor      Vendor    @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  eventTypeId String
+  eventType   EventType @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
+
+  @@unique([vendorId, eventTypeId])
+}
+
+model VendorService {
+  id              String       @id @default(cuid())
+  vendorId        String
+  vendor          Vendor       @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  name            String
+  categoryId      String
+  category        Category     @relation(fields: [categoryId], references: [id])
+  subCategoryId   String?
+  subCategory     SubCategory? @relation(fields: [subCategoryId], references: [id])
+  description     String?
+  startingPrice   Float        @default(0)
+  pricingType     String       @default("STARTING_FROM") // FIXED, STARTING_FROM, PER_HOUR, PER_DAY, CUSTOM_QUOTE
+  images          String       @default("[]") // JSON string of images
+  serviceLocation String?
+  availability    String?      @default("Available all year")
+  tags            String       @default("[]") // JSON string of tags
+  isActive        Boolean      @default(true)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model VendorGallery {
+  id        String   @id @default(cuid())
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  imageUrl  String
+  title     String?
+  caption   String?
+  eventType String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model BusinessHours {
+  id        String   @id @default(cuid())
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  dayOfWeek String
+  openTime  String   @default("09:00 AM")
+  closeTime String   @default("09:00 PM")
+  isClosed  Boolean  @default(false)
+
+  @@unique([vendorId, dayOfWeek])
+}
+
+model EventRequirement {
+  id               String     @id @default(cuid())
+  userId           String?
+  user             User?      @relation(fields: [userId], references: [id])
+  eventTypeId      String?
+  eventType        EventType? @relation(fields: [eventTypeId], references: [id])
+  eventDate        String?
+  city             String
+  location         String?
+  guestCount       Int?
+  budget           Float?
+  requiredServices String     @default("[]") // JSON string
+  notes            String?
+  status           String     @default("OPEN")
+  createdAt        DateTime   @default(now())
+}
+
+model Enquiry {
+  id               String   @id @default(cuid())
+  vendorId         String
+  vendor           Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  userId           String?
+  user             User?    @relation(fields: [userId], references: [id])
+  name             String
+  mobile           String
+  email            String
+  eventTypeId      String?
+  eventType        EventType? @relation(fields: [eventTypeId], references: [id])
+  eventDate        String?
+  location         String
+  guestCount       Int?
+  budget           Float?
+  requiredServices String?
+  message          String
+  status           String   @default("NEW") // NEW, CONTACTED, IN_DISCUSSION, CONVERTED, CLOSED
+  vendorNotes      String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Lead {
+  id          String   @id @default(cuid())
+  vendorId    String
+  vendor      Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  clientName  String
+  clientPhone String
+  clientEmail String?
+  eventType   String?
+  budget      Float?
+  eventDate   String?
+  city        String?
+  status      String   @default("NEW")
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  vendorId    String
+  vendor      Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+  clientName  String
+  clientEmail String?
+  rating      Int      @default(5)
+  title       String?
+  comment     String
+  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Favourite {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, vendorId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("INFO")
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Location {
+  id        String   @id @default(cuid())
+  city      String   @unique
+  state     String
+  country   String   @default("India")
+  image     String?
+  isPopular Boolean  @default(false)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Testimonial {
+  id         String   @id @default(cuid())
+  name       String
+  role       String
+  city       String?
+  avatar     String?
+  comment    String
+  rating     Int      @default(5)
+  isFeatured Boolean  @default(true)
+  isActive   Boolean  @default(true)
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+}
+
+model FAQ {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  category  String   @default("General")
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model HomepageContent {
+  id              String   @id @default("default")
+  heroHeading     String   @default("Plan Your Event. Find Every Vendor.")
+  heroSubheading  String   @default("From weddings and birthdays to corporate events, exhibitions and celebrations — discover trusted vendors on VentZivo.")
+  bannerText      String?  @default("India's Premier All-Event Marketplace • 100% Verified Vendors")
+  bannerLink      String?  @default("/vendors")
+  contactEmail    String   @default("support@ventzivo.com")
+  contactPhone    String   @default("+91 98765 43210")
+  contactAddress  String   @default("Raipur, Chhattisgarh, India")
+  facebookUrl     String?  @default("https://facebook.com/ventzivo")
+  instagramUrl    String?  @default("https://instagram.com/ventzivo")
+  youtubeUrl      String?  @default("https://youtube.com/ventzivo")
+  linkedinUrl     String?  @default("https://linkedin.com/company/ventzivo")
+  seoTitle        String   @default("VentZivo — Plan. Connect. Celebrate. India's Event Marketplace")
+  seoDescription  String   @default("Find, compare and connect with top event vendors for weddings, corporate events, parties, birthdays, photography, catering, and decor across India.")
+  metaKeywords    String   @default("event marketplace, wedding vendors, event planners, photographers, caterers, banquet halls, India events")
+  updatedAt       DateTime @updatedAt
+}
