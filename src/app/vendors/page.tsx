@@ -15,7 +15,7 @@ import {
   SlidersHorizontal,
 } from 'lucide-react';
 
-export default function VendorsSearchPage() {
+function VendorsSearchContent() {
   const searchParams = useSearchParams();
 
   // Search and Filter States
@@ -540,5 +540,19 @@ export default function VendorsSearchPage() {
       )}
 
     </div>
+  );
+}
+
+export default function VendorsSearchPage() {
+  return (
+    <React.Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-8">
+          <div className="w-8 h-8 rounded-full border-4 border-brand-blue-800 border-t-transparent animate-spin" />
+        </div>
+      }
+    >
+      <VendorsSearchContent />
+    </React.Suspense>
   );
 }
