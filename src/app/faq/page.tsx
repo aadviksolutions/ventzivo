@@ -7,13 +7,48 @@ export const metadata = {
   description: 'Common questions and answers about booking and listing event vendors on VentZivo.',
 };
 
-export const revalidate = 0;
+const FALLBACK_FAQS = [
+  {
+    id: 'faq-1',
+    question: 'How does VentZivo work for event hosts?',
+    answer: 'VentZivo lets you discover verified vendors across 30+ event categories, inspect pricing and portfolios, and send direct enquiries without any middleman charges or commissions.',
+  },
+  {
+    id: 'faq-2',
+    question: 'Are all vendors on VentZivo verified?',
+    answer: 'Yes, our team validates business credentials, past client reviews, and portfolio quality before awarding the Verified badge.',
+  },
+  {
+    id: 'faq-3',
+    question: 'Is VentZivo free to use for clients?',
+    answer: 'Yes, 100% free! Clients can browse, shortlist, and contact vendors directly via Call, WhatsApp, and Send Enquiry.',
+  },
+  {
+    id: 'faq-4',
+    question: 'How do I list my business on VentZivo?',
+    answer: 'Click "List Your Business" or "Register as Vendor", complete your profile, upload your portfolio, and our admin team will review and approve your listing.',
+  },
+  {
+    id: 'faq-5',
+    question: 'What is the official contact number for VentZivo support?',
+    answer: 'You can reach our official support desk directly at 7566145566 or chat via WhatsApp at +91 7566145566.',
+  },
+];
 
 export default async function FaqPage() {
-  const faqs = await prisma.fAQ.findMany({
-    where: { isActive: true },
-    orderBy: { sortOrder: 'asc' },
-  });
+  let faqs = FALLBACK_FAQS;
+
+  try {
+    const dbFaqs = await prisma.fAQ.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: 'asc' },
+    });
+    if (dbFaqs && dbFaqs.length > 0) {
+      faqs = dbFaqs;
+    }
+  } catch (err) {
+    console.warn('Prisma FAQ query failed, serving fallback:', err);
+  }
 
   return (
     <div className="bg-slate-50 min-h-screen py-16">

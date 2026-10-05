@@ -8,12 +8,34 @@ export const metadata = {
   description: 'Find trusted event vendors in your city across India.',
 };
 
-export const revalidate = 0;
+const FALLBACK_LOCATIONS = [
+  { id: 'loc-1', city: 'Raipur', state: 'Chhattisgarh' },
+  { id: 'loc-2', city: 'Mumbai', state: 'Maharashtra' },
+  { id: 'loc-3', city: 'Delhi NCR', state: 'Delhi' },
+  { id: 'loc-4', city: 'Bengaluru', state: 'Karnataka' },
+  { id: 'loc-5', city: 'Jaipur', state: 'Rajasthan' },
+  { id: 'loc-6', city: 'Goa', state: 'Goa' },
+  { id: 'loc-7', city: 'Indore', state: 'Madhya Pradesh' },
+  { id: 'loc-8', city: 'Hyderabad', state: 'Telangana' },
+  { id: 'loc-9', city: 'Bhilai', state: 'Chhattisgarh' },
+  { id: 'loc-10', city: 'Bilaspur', state: 'Chhattisgarh' },
+  { id: 'loc-11', city: 'Pune', state: 'Maharashtra' },
+  { id: 'loc-12', city: 'Ahmedabad', state: 'Gujarat' },
+];
 
 export default async function LocationsPage() {
-  const locations = await prisma.location.findMany({
-    orderBy: { sortOrder: 'asc' },
-  });
+  let locations = FALLBACK_LOCATIONS;
+
+  try {
+    const dbLocations = await prisma.location.findMany({
+      orderBy: { sortOrder: 'asc' },
+    });
+    if (dbLocations && dbLocations.length > 0) {
+      locations = dbLocations as any;
+    }
+  } catch (err) {
+    console.warn('Prisma locations query failed, serving fallback:', err);
+  }
 
   return (
     <div className="bg-slate-50 min-h-screen py-16">

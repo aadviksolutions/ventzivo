@@ -3,17 +3,35 @@ import { prisma } from '@/lib/prisma';
 import SmartEventWizard from '@/components/home/SmartEventWizard';
 import { Sparkles, ShieldCheck, HeartHandshake, CheckCircle2 } from 'lucide-react';
 
+import { FALLBACK_EVENT_TYPES } from '@/lib/mockData';
+
 export const revalidate = 0;
 
 export default async function PlanEventPage() {
-  const eventTypes = await prisma.eventType.findMany({
-    where: { isActive: true },
-    orderBy: { sortOrder: 'asc' },
-  });
+  let eventTypes: any[] = FALLBACK_EVENT_TYPES;
+  let locations: any[] = [
+    { city: 'Raipur' },
+    { city: 'Mumbai' },
+    { city: 'Delhi NCR' },
+    { city: 'Bengaluru' },
+    { city: 'Jaipur' },
+    { city: 'Goa' },
+  ];
 
-  const locations = await prisma.location.findMany({
-    orderBy: { sortOrder: 'asc' },
-  });
+  try {
+    const dbEvents = await prisma.eventType.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: 'asc' },
+    });
+    if (dbEvents && dbEvents.length > 0) eventTypes = dbEvents;
+
+    const dbLocations = await prisma.location.findMany({
+      orderBy: { sortOrder: 'asc' },
+    });
+    if (dbLocations && dbLocations.length > 0) locations = dbLocations;
+  } catch (err) {
+    console.warn('Prisma query in PlanEventPage failed, serving fallback:', err);
+  }
 
   return (
     <div className="bg-slate-900 text-white min-h-screen py-16 px-4 sm:px-6 lg:px-8">
