@@ -12,26 +12,31 @@ const FALLBACK_FAQS = [
     id: 'faq-1',
     question: 'How does VentZivo work for event hosts?',
     answer: 'VentZivo lets you discover verified vendors across 30+ event categories, inspect pricing and portfolios, and send direct enquiries without any middleman charges or commissions.',
+    category: 'General',
   },
   {
     id: 'faq-2',
     question: 'Are all vendors on VentZivo verified?',
     answer: 'Yes, our team validates business credentials, past client reviews, and portfolio quality before awarding the Verified badge.',
+    category: 'Trust & Safety',
   },
   {
     id: 'faq-3',
     question: 'Is VentZivo free to use for clients?',
     answer: 'Yes, 100% free! Clients can browse, shortlist, and contact vendors directly via Call, WhatsApp, and Send Enquiry.',
+    category: 'Pricing',
   },
   {
     id: 'faq-4',
     question: 'How do I list my business on VentZivo?',
     answer: 'Click "List Your Business" or "Register as Vendor", complete your profile, upload your portfolio, and our admin team will review and approve your listing.',
+    category: 'For Vendors',
   },
   {
     id: 'faq-5',
     question: 'What is the official contact number for VentZivo support?',
     answer: 'You can reach our official support desk directly at 7566145566 or chat via WhatsApp at +91 7566145566.',
+    category: 'Support',
   },
 ];
 

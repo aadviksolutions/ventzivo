@@ -7,7 +7,7 @@ interface FAQItem {
   id: string;
   question: string;
   answer: string;
-  category: string;
+  category?: string;
 }
 
 export default function FaqAccordion({ faqs }: { faqs: FAQItem[] }) {
