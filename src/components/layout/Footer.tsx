@@ -29,6 +29,22 @@ export default function Footer() {
             <p className="text-[11px] font-bold text-amber-400 tracking-wider uppercase">
               One Platform. Every Event. Every Vendor.
             </p>
+            <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center gap-3 text-xs">
+              <a 
+                href="tel:7566145566" 
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-amber-400 hover:text-slate-950 text-slate-300 font-semibold transition-all border border-white/10"
+              >
+                <span>📞 Call: 7566145566</span>
+              </a>
+              <a 
+                href="https://wa.me/917566145566?text=Hi%20VentZivo%2C%20I%20have%20an%20enquiry" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500 hover:text-white text-emerald-400 font-semibold transition-all border border-emerald-500/20"
+              >
+                <span>💬 WhatsApp</span>
+              </a>
+            </div>
           </div>
 
           {/* Quick Links */}

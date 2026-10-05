@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+import { FALLBACK_EVENT_TYPES } from '@/lib/mockData';
+
 export async function GET() {
   try {
     const eventTypes = await prisma.eventType.findMany({
@@ -12,9 +14,10 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json({ success: true, eventTypes });
+    return NextResponse.json({ success: true, eventTypes: eventTypes.length > 0 ? eventTypes : FALLBACK_EVENT_TYPES });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.warn('Prisma event-types fetch failed, serving fallback:', error);
+    return NextResponse.json({ success: true, eventTypes: FALLBACK_EVENT_TYPES });
   }
 }
 

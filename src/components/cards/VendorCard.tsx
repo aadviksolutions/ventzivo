@@ -29,7 +29,7 @@ export interface VendorCardData {
   rating: number;
   reviewCount: number;
   startingPrice: number;
-  experienceYears: number;
+  experienceYears?: number;
   description?: string;
   isVerified?: boolean;
   isFeatured?: boolean;
@@ -116,7 +116,7 @@ export default function VendorCard({ vendor }: { vendor: VendorCardData }) {
             </div>
 
             {/* Experience Pill */}
-            {vendor.experienceYears > 0 && (
+            {(vendor.experienceYears ?? 0) > 0 && (
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-black/50 text-slate-200 backdrop-blur-sm border border-white/20">
                 {vendor.experienceYears}+ Yrs Exp
               </span>
@@ -186,15 +186,15 @@ export default function VendorCard({ vendor }: { vendor: VendorCardData }) {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs flex items-center gap-1.5 border border-amber-200/80 transition-all active:scale-95 shadow-sm"
+                className="px-3.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-sm"
               >
-                <Send className="w-3 h-3 text-amber-700" />
-                <span>Enquire</span>
+                <Send className="w-3.5 h-3.5 text-slate-950" />
+                <span>Send Enquiry</span>
               </button>
 
               <Link
                 href={`/vendor/${vendor.slug}`}
-                className="px-3 py-1.5 rounded-xl bg-brand-blue-800 hover:bg-brand-blue-900 text-white font-bold text-xs flex items-center gap-1 transition-all active:scale-95 shadow-sm"
+                className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-brand-blue-800 text-white font-bold text-xs flex items-center gap-1 transition-all active:scale-95 shadow-sm"
               >
                 <span>View</span>
                 <ArrowRight className="w-3 h-3" />

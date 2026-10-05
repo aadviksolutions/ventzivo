@@ -335,7 +335,7 @@ model HomepageContent {
   bannerText      String?  @default("India's Premier All-Event Marketplace • 100% Verified Vendors")
   bannerLink      String?  @default("/vendors")
   contactEmail    String   @default("support@ventzivo.com")
-  contactPhone    String   @default("+91 98765 43210")
+  contactPhone    String   @default("+91 7566145566")
   contactAddress  String   @default("Raipur, Chhattisgarh, India")
   facebookUrl     String?  @default("https://facebook.com/ventzivo")
   instagramUrl    String?  @default("https://instagram.com/ventzivo")

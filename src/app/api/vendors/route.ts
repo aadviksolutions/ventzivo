@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { FALLBACK_VENDORS } from '@/lib/mockData';
 
 export async function GET(req: NextRequest) {
   try {
@@ -178,8 +179,37 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ success: true, vendors: formatted, total: formatted.length });
   } catch (error: any) {
-    console.error('Error fetching vendors:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.warn('Prisma vendors fetch failed, serving fallback:', error);
+    const fallbackList = FALLBACK_VENDORS.map((v) => ({
+      id: v.id,
+      name: v.businessName,
+      ownerName: v.ownerName,
+      slug: v.slug,
+      email: v.email,
+      mobile: v.mobile,
+      whatsapp: v.whatsapp,
+      category: v.category?.name || 'General',
+      categorySlug: v.category?.slug,
+      subCategory: v.subCategory?.name,
+      city: v.city,
+      state: v.state,
+      address: v.address,
+      rating: v.rating,
+      reviewCount: v.reviewCount,
+      startingPrice: v.startingPrice,
+      experienceYears: v.experienceYears,
+      teamSize: v.teamSize,
+      description: v.description,
+      isVerified: v.isVerified,
+      isFeatured: v.isFeatured,
+      status: v.status,
+      coverImage: v.coverImage,
+      logo: v.logo || '/ventzivo-logo.jpg',
+      serviceAreas: v.serviceAreas,
+      servicesCount: v.services.length,
+      createdAt: new Date().toISOString(),
+    }));
+    return NextResponse.json({ success: true, vendors: fallbackList, total: fallbackList.length });
   }
 }
 

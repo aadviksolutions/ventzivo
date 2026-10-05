@@ -38,8 +38,10 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-outfit)", "system-ui", "sans-serif"],
-        display: ["var(--font-montserrat)", "system-ui", "sans-serif"],
+        sans: ["'Plus Jakarta Sans'", "'Outfit'", "system-ui", "sans-serif"],
+        display: ["'Playfair Display'", "Georgia", "serif"],
+        serif: ["'Playfair Display'", "Georgia", "serif"],
+        heading: ["'Plus Jakarta Sans'", "'Outfit'", "sans-serif"],
       },
       boxShadow: {
         'brand': '0 10px 25px -5px rgba(11, 59, 149, 0.1), 0 8px 10px -6px rgba(11, 59, 149, 0.1)',

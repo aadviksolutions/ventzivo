@@ -163,9 +163,17 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                Password
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-slate-700">
+                  Password
+                </label>
+                <Link
+                  href="/forgot-password"
+                  className="text-xs font-semibold text-brand-blue-800 hover:underline"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
               <div className="relative">
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                 <input
@@ -189,11 +197,19 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="pt-4 border-t border-slate-100 text-center text-xs text-slate-600">
-            Are you a service provider?{' '}
-            <Link href="/vendor/register" className="font-bold text-brand-blue-800 hover:underline">
-              Register as Vendor Free
-            </Link>
+          <div className="pt-4 border-t border-slate-100 space-y-2 text-center text-xs text-slate-600">
+            <div>
+              Don't have an account?{' '}
+              <Link href="/register" className="font-bold text-brand-blue-800 hover:underline">
+                Sign Up as Client
+              </Link>
+            </div>
+            <div>
+              Are you an event service provider?{' '}
+              <Link href="/vendor/register" className="font-bold text-amber-600 hover:underline">
+                Register as Vendor Free
+              </Link>
+            </div>
           </div>
         </div>
 

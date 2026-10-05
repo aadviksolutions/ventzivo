@@ -17,7 +17,7 @@ async function main() {
       bannerText: "India's Premier All-Event Marketplace • 100% Verified Vendors",
       bannerLink: '/vendors',
       contactEmail: 'support@ventzivo.com',
-      contactPhone: '+91 98765 43210',
+      contactPhone: '+91 7566145566',
       contactAddress: 'Raipur, Chhattisgarh, India',
       facebookUrl: 'https://facebook.com/ventzivo',
       instagramUrl: 'https://instagram.com/ventzivo',

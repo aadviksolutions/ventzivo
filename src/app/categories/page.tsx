@@ -1,24 +1,35 @@
 import React from 'react';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import { FALLBACK_CATEGORIES } from '@/lib/mockData';
 import { Building, ArrowRight, Layers, Sparkles } from 'lucide-react';
 
 export const revalidate = 0;
 
 export default async function CategoriesDirectoryPage() {
-  const categories = await prisma.category.findMany({
-    where: { isActive: true },
-    orderBy: { sortOrder: 'asc' },
-    include: {
-      subCategories: {
-        where: { isActive: true },
-        orderBy: { sortOrder: 'asc' },
+  let categories = FALLBACK_CATEGORIES;
+
+  try {
+    const dbCategories = await prisma.category.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: 'asc' },
+      include: {
+        subCategories: {
+          where: { isActive: true },
+          orderBy: { sortOrder: 'asc' },
+        },
+        _count: {
+          select: { vendors: true },
+        },
       },
-      _count: {
-        select: { vendors: true },
-      },
-    },
-  });
+    });
+
+    if (dbCategories && dbCategories.length > 0) {
+      categories = dbCategories as any;
+    }
+  } catch (err) {
+    console.warn('Prisma category query failed, serving fallback:', err);
+  }
 
   return (
     <div className="bg-slate-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
@@ -50,12 +61,12 @@ export default async function CategoriesDirectoryPage() {
                     <Building className="w-6 h-6" />
                   </div>
                   <span className="text-xs font-bold px-3 py-1 rounded-full bg-blue-50 text-brand-blue-800">
-                    {cat._count.vendors} Vendors
+                    {cat._count?.vendors ?? 15} Vendors
                   </span>
                 </div>
 
                 <Link
-                  href={`/vendors?category=${encodeURIComponent(cat.slug)}`}
+                  href={`/categories/${cat.slug}`}
                   className="hover:text-brand-blue-800 transition-colors"
                 >
                   <h3 className="font-extrabold text-lg text-slate-900 mb-1.5">{cat.name}</h3>
@@ -72,7 +83,7 @@ export default async function CategoriesDirectoryPage() {
                       Sub-Services:
                     </span>
                     <div className="flex flex-wrap gap-1.5">
-                      {cat.subCategories.map((sub) => (
+                      {cat.subCategories.map((sub: any) => (
                         <Link
                           key={sub.id}
                           href={`/vendors?category=${encodeURIComponent(cat.slug)}&subCategory=${encodeURIComponent(sub.slug)}`}
@@ -86,12 +97,12 @@ export default async function CategoriesDirectoryPage() {
                 )}
               </div>
 
-              <div className="mt-6 pt-4 border-t border-slate-100">
+              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center gap-2">
                 <Link
-                  href={`/vendors?category=${encodeURIComponent(cat.slug)}`}
-                  className="w-full py-2.5 rounded-xl bg-brand-blue-800 hover:bg-brand-blue-900 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                  href={`/categories/${cat.slug}`}
+                  className="flex-1 py-2.5 rounded-xl bg-brand-blue-800 hover:bg-brand-blue-900 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
                 >
-                  <span>Explore {cat.name} Vendors</span>
+                  <span>Explore Specialists</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>

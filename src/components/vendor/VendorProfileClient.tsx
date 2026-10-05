@@ -533,16 +533,24 @@ export default function VendorProfileClient({ vendor }: { vendor: any }) {
               <h3 className="font-extrabold text-slate-900 text-base">Direct Vendor Contact</h3>
               
               <div className="space-y-2.5 text-xs text-slate-600">
-                <div className="flex items-center gap-2.5">
-                  <Phone className="w-4 h-4 text-brand-blue-700" />
-                  <span className="font-bold text-slate-800">{vendor.mobile}</span>
-                </div>
-                {vendor.whatsapp && (
-                  <div className="flex items-center gap-2.5">
-                    <MessageCircle className="w-4 h-4 text-emerald-600" />
-                    <span>WhatsApp Available</span>
-                  </div>
-                )}
+                <a 
+                  href={`tel:${vendor.mobile || '7566145566'}`} 
+                  className="flex items-center gap-2.5 hover:text-brand-blue-800 transition-colors group p-2 rounded-xl bg-slate-50 hover:bg-slate-100"
+                >
+                  <Phone className="w-4 h-4 text-brand-blue-700 group-hover:scale-110 transition-transform" />
+                  <span className="font-bold text-slate-800">{vendor.mobile || '7566145566'}</span>
+                  <span className="text-[10px] text-brand-blue-800 bg-blue-50 px-2 py-0.5 rounded-md font-bold ml-auto">Tap to Call</span>
+                </a>
+                <a 
+                  href={`https://wa.me/${(vendor.whatsapp || vendor.mobile || '7566145566').replace(/[^0-9]/g, '')}?text=Hi%2C%20I%20found%20you%20on%20VentZivo`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2.5 text-emerald-700 hover:text-emerald-800 transition-colors group p-2 rounded-xl bg-emerald-50/60 hover:bg-emerald-50"
+                >
+                  <MessageCircle className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
+                  <span className="font-semibold text-emerald-950">Chat on WhatsApp</span>
+                  <span className="text-[10px] text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md font-bold ml-auto">Direct Chat</span>
+                </a>
                 {vendor.website && (
                   <div className="flex items-center gap-2.5">
                     <Globe className="w-4 h-4 text-slate-500" />
@@ -587,29 +595,36 @@ export default function VendorProfileClient({ vendor }: { vendor: any }) {
       </div>
 
       {/* 5. STICKY MOBILE BOTTOM CTA */}
-      <div className="lg:hidden fixed bottom-14 left-0 right-0 z-40 bg-white border-t border-slate-200 p-3 shadow-2xl flex items-center justify-between gap-3">
-        <div>
-          <span className="text-[10px] text-slate-400 block font-semibold">Starting from</span>
-          <span className="text-base font-extrabold text-brand-blue-900">
+      <div className="lg:hidden fixed bottom-14 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 py-2.5 shadow-2xl flex items-center justify-between gap-2">
+        <div className="min-w-0 pr-1">
+          <span className="text-[10px] text-slate-400 block font-semibold leading-tight">Starting from</span>
+          <span className="text-sm sm:text-base font-extrabold text-brand-blue-900 truncate block">
             {formatPrice(vendor.startingPrice)}
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          {vendor.whatsapp && (
-            <a
-              href={`https://wa.me/${vendor.whatsapp.replace(/[^0-9]/g, '')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2.5 rounded-xl bg-emerald-600 text-white"
-            >
-              <MessageCircle className="w-5 h-5" />
-            </a>
-          )}
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          <a
+            href={`tel:${vendor.mobile || '7566145566'}`}
+            className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors flex items-center justify-center border border-slate-200"
+            aria-label="Call Vendor"
+          >
+            <Phone className="w-4 h-4 text-brand-blue-800" />
+          </a>
+          <a
+            href={`https://wa.me/${(vendor.whatsapp || vendor.mobile || '7566145566').replace(/[^0-9]/g, '')}?text=Hi%2C%20I%20found%20you%20on%20VentZivo`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition-colors flex items-center justify-center"
+            aria-label="WhatsApp Vendor"
+          >
+            <MessageCircle className="w-4 h-4" />
+          </a>
           <button
             onClick={() => setIsEnquiryModalOpen(true)}
-            className="px-5 py-2.5 rounded-xl bg-brand-blue-800 text-white font-extrabold text-xs shadow-md"
+            className="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs shadow-md transition-all active:scale-95 flex items-center gap-1.5"
           >
-            Send Enquiry
+            <Send className="w-3.5 h-3.5" />
+            <span>Send Enquiry</span>
           </button>
         </div>
       </div>

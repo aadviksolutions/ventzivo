@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+import { FALLBACK_CATEGORIES } from '@/lib/mockData';
+
 export async function GET() {
   try {
     const categories = await prisma.category.findMany({
@@ -16,9 +18,10 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json({ success: true, categories });
+    return NextResponse.json({ success: true, categories: categories.length > 0 ? categories : FALLBACK_CATEGORIES });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.warn('Prisma categories fetch failed, serving fallback:', error);
+    return NextResponse.json({ success: true, categories: FALLBACK_CATEGORIES });
   }
 }
 

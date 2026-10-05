@@ -36,14 +36,33 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-start gap-3">
-              <Phone className="w-5 h-5 text-brand-gold-600 flex-shrink-0 mt-0.5" />
+            <a 
+              href="tel:7566145566"
+              className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-start gap-3 hover:border-amber-400 hover:shadow-md transition-all group block"
+            >
+              <Phone className="w-5 h-5 text-brand-gold-600 flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
               <div>
-                <h4 className="font-bold text-slate-900 text-sm">Direct Phone</h4>
-                <p className="text-xs text-slate-500 mt-1">+91 98765 43210</p>
-                <p className="text-[11px] text-slate-400">Mon - Sat, 9am - 8pm IST</p>
+                <h4 className="font-bold text-slate-900 text-sm">Official Contact Phone</h4>
+                <p className="text-sm font-semibold text-brand-blue-800 mt-1">7566145566</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">Mon - Sat, 9am - 8pm IST • Tap to Call</p>
               </div>
-            </div>
+            </a>
+
+            <a 
+              href="https://wa.me/917566145566?text=Hi%20VentZivo%2C%20I%20have%20an%20enquiry"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-6 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 shadow-sm flex items-start gap-3 hover:bg-emerald-50 hover:shadow-md transition-all group block"
+            >
+              <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold">
+                W
+              </div>
+              <div>
+                <h4 className="font-bold text-emerald-950 text-sm">Official WhatsApp Support</h4>
+                <p className="text-sm font-semibold text-emerald-700 mt-1">+91 7566145566</p>
+                <p className="text-[11px] text-emerald-600/80 mt-0.5">Instant Chat Support • Tap to Message</p>
+              </div>
+            </a>
 
             <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-start gap-3">
               <MapPin className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
