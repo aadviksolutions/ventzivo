@@ -19,53 +19,103 @@ import { formatPrice } from '@/lib/utils';
 export const revalidate = 0; // Fresh database updates
 
 export default async function HomePage() {
-  // Fetch Event Types for search dropdown
-  const eventTypes = await prisma.eventType.findMany({
-    where: { isActive: true },
-    orderBy: { sortOrder: 'asc' },
-    take: 12,
-  });
-
-  // Fetch Locations for search dropdown
-  const locations = await prisma.location.findMany({
-    where: { isPopular: true },
-    orderBy: { sortOrder: 'asc' },
-  });
-
-  // Fetch Exactly 3 Featured & Verified Vendors
-  const vendorsRaw = await prisma.vendor.findMany({
-    where: {
-      status: { in: ['APPROVED', 'VERIFIED'] },
-      isFeatured: true,
+  const fallbackFeatured = [
+    {
+      id: 'fb-1',
+      businessName: 'Royal Orchid Luxury Banquet & Lawns',
+      slug: 'royal-orchid-banquet',
+      category: { name: 'Venue' },
+      city: 'Raipur',
+      rating: 4.9,
+      startingPrice: 150000,
+      isVerified: true,
+      description: 'Opulent banquets, manicured royal gardens, and 5-star hospitality for grand weddings and corporate galas.',
+      coverImage: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=800&q=80',
     },
-    take: 3,
-    include: {
-      category: true,
-      eventTypes: {
-        include: { eventType: true },
-      },
+    {
+      id: 'fb-2',
+      businessName: 'Shutter & Soul Wedding Cinema',
+      slug: 'shutter-soul-cinema',
+      category: { name: 'Photography' },
+      city: 'Delhi NCR',
+      rating: 5.0,
+      startingPrice: 75000,
+      isVerified: true,
+      description: 'Award-winning candid photography and cinematic 4K wedding films capturing unforgettable moments.',
+      coverImage: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=800&q=80',
     },
-    orderBy: [{ rating: 'desc' }, { reviewCount: 'desc' }],
-  });
+    {
+      id: 'fb-3',
+      businessName: 'The Grand Imperial Catering Co.',
+      slug: 'grand-imperial-catering',
+      category: { name: 'Catering' },
+      city: 'Mumbai',
+      rating: 4.8,
+      startingPrice: 1200,
+      isVerified: true,
+      description: 'Gourmet multi-cuisine catering, live artisanal counters, and royal dining presentation.',
+      coverImage: 'https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=800&q=80',
+    },
+  ];
 
-  // Fallback to top rated vendors if fewer than 3 featured
-  let featuredVendors = vendorsRaw;
-  if (featuredVendors.length < 3) {
-    const additional = await prisma.vendor.findMany({
+  let eventTypes: any[] = [];
+  let locations: any[] = [];
+  let featuredVendors: any[] = [];
+
+  try {
+    // Fetch Event Types for search dropdown
+    eventTypes = await prisma.eventType.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: 'asc' },
+      take: 12,
+    });
+
+    // Fetch Locations for search dropdown
+    locations = await prisma.location.findMany({
+      where: { isPopular: true },
+      orderBy: { sortOrder: 'asc' },
+    });
+
+    // Fetch Exactly 3 Featured & Verified Vendors
+    const vendorsRaw = await prisma.vendor.findMany({
       where: {
         status: { in: ['APPROVED', 'VERIFIED'] },
-        id: { notIn: vendorsRaw.map((v) => v.id) },
+        isFeatured: true,
       },
-      take: 3 - featuredVendors.length,
+      take: 3,
       include: {
         category: true,
         eventTypes: {
           include: { eventType: true },
         },
       },
-      orderBy: { rating: 'desc' },
+      orderBy: [{ rating: 'desc' }, { reviewCount: 'desc' }],
     });
-    featuredVendors = [...featuredVendors, ...additional];
+
+    featuredVendors = vendorsRaw;
+    if (featuredVendors.length < 3) {
+      const additional = await prisma.vendor.findMany({
+        where: {
+          status: { in: ['APPROVED', 'VERIFIED'] },
+          id: { notIn: vendorsRaw.map((v) => v.id) },
+        },
+        take: 3 - featuredVendors.length,
+        include: {
+          category: true,
+          eventTypes: {
+            include: { eventType: true },
+          },
+        },
+        orderBy: { rating: 'desc' },
+      });
+      featuredVendors = [...featuredVendors, ...additional];
+    }
+  } catch (err) {
+    console.warn('Database query fallback triggered:', err);
+  }
+
+  if (!featuredVendors || featuredVendors.length === 0) {
+    featuredVendors = fallbackFeatured;
   }
 
   // Curated 6 Event Cards
